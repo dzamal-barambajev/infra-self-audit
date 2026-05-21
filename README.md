@@ -38,24 +38,29 @@ graph LR
     classDef monStyle fill:#FFFDE7,stroke:#F57F17,stroke-width:1.5px,rx:6px,ry:6px;
     classDef vpnStyle fill:#FFF3E0,stroke:#E65100,stroke-width:1.5px,rx:6px,ry:6px;
 
-    %% Ingress Core Pipeline
-    Internet(["Internet"]) --> Xray["Xray Core<br>vLESS + Reality<br>🔒 443"]
-    VPN["VPN Clients<br>Family Access"] -.-> Xray
-    Xray --> Nginx["nginx<br>Proxy Gateway<br>🔒 8443"]
+    %% Ingress Core Pipeline with Large Icons inside labels
+    Internet(["<img src='https://gstatic.com' width='28'/><br>Internet"])
+    Xray["Xray Core<br>vLESS + Reality<br>🔒 443"]
+    VPN["VPN Clients<br>Family Access"]
+    Nginx["nginx<br>Proxy Gateway<br>🔒 8443"]
 
     %% Super Compact Subgraph Cluster for Backends
     subgraph Hosted_Services_Stack [" HOSTED SERVICES STACK "]
-        MainWeb["Websites<br>Public Domains"]
-        Docker["Docker Apps<br>Containers"]
-        PHP["PHP Hosting<br>PHP-FPM Apps"]
-        Mon["Monitoring<br>Metrics & Logs"]
+        MainWeb["🌐<br><b>Websites</b><br>Public Domains"]
+        Docker["🐳<br><b>Docker Apps</b><br>Containers"]
+        PHP["🐘<br><b>PHP Hosting</b><br>PHP-FPM Apps"]
+        Mon["📊<br><b>Monitoring</b><br>Metrics & Logs"]
     end
 
-    %% Tight Routing Connections with Massive Icons on Lines
-    Nginx ==>|🌐 Websites| MainWeb
-    Nginx ==>|🐳 Docker| Docker
-    Nginx ==>|🐘 PHP| PHP
-    Nginx ==>|📊 Monitoring| Mon
+    %% Tight Routing Connections with Text labels
+    Internet --> Xray
+    VPN -.-> Xray
+    Xray --> Nginx
+
+    Nginx ==>|Web| MainWeb
+    Nginx ==>|Docker| Docker
+    Nginx ==>|PHP| PHP
+    Nginx ==>|Metrics| Mon
 
     %% Style Injection
     class Internet internetStyle;
