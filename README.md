@@ -25,32 +25,38 @@ The server was originally deployed as a private VPN gateway for family members. 
 ### Architecture Overview
 
 ```mermaid
-graph TD
-    %% Base Layout Configuration
-    Internet((Internet)) --> Ingress["443 public"]
-    Ingress --> Xray["Xray VLESS + Reality"]
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Helvetica', 'primaryColor': '#ffffff', 'edgeLabelBackground':'#ffffff'}}}%%
+graph LR
+    %% Style Profiles
+    classDef mainNode fill:#fff,stroke:#4A90E2,stroke-width:1.5px,rx:8px,ry:8px;
+    classDef secNode fill:#fff,stroke:#7B1FA2,stroke-width:1.2px,rx:6px,ry:6px;
+    classDef outlineNode fill:#fff,stroke:#555,stroke-width:1.2px,rx:6px,ry:6px;
+
+    %% Elements and Icons definition
+    Internet(["🌐 <br> Internet"])
+    Xray["<div style='color:#00796B; font-weight:bold;'>Xray Core</div><div style='font-size:11px; color:#555;'>Reality + vLESS</div><div style='font-size:11px; color:#00796B;'>🔒 :443 (TLS)</div>"]
+    Nginx["<div style='color:#0D47A1; font-weight:bold;'>nginx</div><div style='font-size:11px; color:#555;'>Reverse Proxy</div><div style='font-size:11px; color:#0D47A1;'>🔒 :8443</div>"]
+    Web["<div style='color:#1A237E; font-weight:bold;'>Websites</div><div style='font-size:11px; color:#555;'>Public & Private<br>Domains</div>"]
     
-    VPN[VPN Clients] -.-> Xray
+    VPN["📦 <br> <b>VPN Clients</b><br><span style='font-size:11px; color:#555;'>Family / Remote<br>Access</span>"]
+    Docker["🐳 <br> <b>Docker Apps</b><br><span style='font-size:11px; color:#555;'>Containerized<br>Services</span>"]
+    PHP["🐘 <br> <b>PHP Hosting</b><br><span style='font-size:11px; color:#555;'>PHP-FPM<br>Applications</span>"]
+    Mon["📊 <br> <b>Monitoring Stack</b><br><span style='font-size:11px; color:#555;'>Metrics, Logs<br>& Alerts</span>"]
 
-    Xray --> Fallback["Local 127.0.0.1 8443"]
-    Fallback --> Nginx[nginx]
+    %% Flow Connections
+    Internet --> Xray
+    Xray --> Nginx
+    Nginx --> Web
+    
+    VPN -.-> Xray
+    Nginx -.-> Docker
+    Nginx -.-> PHP
+    Nginx -.-> Mon
 
-    Nginx --> Main[Main Site]
-    Nginx --> Wife[Wife Site]
-    Nginx --> Mon[Monitoring]
-    Nginx --> Docker[Docker Apps]
-
-    %% Color definitions for elements (using safe hex codes)
-    style Internet fill:#E6F0FA,stroke:#4A90E2,stroke-width:2px;
-    style Ingress fill:#F0F4F8,stroke:#9B9B9B,stroke-width:2px;
-    style Xray fill:#FFF0F5,stroke:#FF69B4,stroke-width:2px;
-    style VPN fill:#FFF5EE,stroke:#FFA500,stroke-width:2px;
-    style Fallback fill:#F5F5F5,stroke:#777777,stroke-width:2px;
-    style Nginx fill:#E6F4EA,stroke:#34A853,stroke-width:2px;
-    style Main fill:#FFFFFF,stroke:#333333,stroke-width:2px;
-    style Wife fill:#FFFFFF,stroke:#333333,stroke-width:2px;
-    style Mon fill:#FFFDE7,stroke:#FBC02D,stroke-width:2px;
-    style Docker fill:#E1F5FE,stroke:#0288D1,stroke-width:2px;
+    %% Assigning Style Classes
+    class Xray,Nginx,Web mainNode;
+    class Docker,PHP,Mon secNode;
+    class Internet,VPN outlineNode;
 ```
 
 ### Current Understanding
