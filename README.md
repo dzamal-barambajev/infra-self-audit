@@ -2,7 +2,15 @@
 
 A self-hosted infrastructure built as a private VPN gateway and evolved into a layered stack of services, monitoring, and reverse proxy routing.
 
-![Self-Hosted](https://shields.io) ![VPN](https://shields.io) ![Docker](https://shields.io) ![Nginx](https://shields.io) ![Xray](https://shields.io) ![Monitoring](https://shields.io) ![Reverse Proxy](https://shields.io)
+<p align="left">
+  <img src="https://shields.io" alt="Self-Hosted">
+  <img src="https://shields.io" alt="VPN">
+  <img src="https://shields.io" alt="Docker">
+  <img src="https://shields.io" alt="Nginx">
+  <img src="https://shields.io" alt="Xray">
+  <img src="https://shields.io" alt="Monitoring">
+  <img src="https://shields.io" alt="Reverse Proxy">
+</p>
 
 ### Overview
 
@@ -18,8 +26,19 @@ The server was originally deployed as a private VPN gateway for family members. 
 
 ```mermaid
 graph LR
-    classDef box fill:#fff,stroke:#777,stroke-width:1px,round;
+    %% Strict theme overrides for GitHub Markdown override
+    style Internet fill:#E6E6FA,stroke:#777,stroke-width:2px;
+    style Ingress fill:#FFF,stroke:#333,stroke-width:2px;
+    style Xray fill:#FFF,stroke:#333,stroke-width:2px;
+    style VPN fill:#FFF,stroke:#333,stroke-width:2px;
+    style Fallback fill:#FFF,stroke:#333,stroke-width:2px;
+    style Nginx fill:#FFF,stroke:#333,stroke-width:2px;
+    style Main fill:#FFF,stroke:#333,stroke-width:2px;
+    style Wife fill:#FFF,stroke:#333,stroke-width:2px;
+    style Mon fill:#FFF,stroke:#333,stroke-width:2px;
+    style Docker fill:#FFF,stroke:#333,stroke-width:2px;
 
+    %% Base Layout Configuration
     Internet((Internet)) --> Ingress["443 public"]
     Ingress --> Xray["Xray VLESS + Reality"]
     
@@ -32,8 +51,6 @@ graph LR
     Nginx --> Wife[Wife Site]
     Nginx --> Mon[Monitoring]
     Nginx --> Docker[Docker Apps]
-
-    class Xray,Nginx,Main,Wife,Mon,Docker,Fallback,VPN,Ingress box;
 ```
 
 ### Current Understanding
