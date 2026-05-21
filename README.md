@@ -13,23 +13,26 @@ Over time, the infrastructure evolved into a layered self-hosted stack built aro
 - monitoring stack
 - reverse proxy architecture
 
-                    INTERNET
-                        │
-                        ▼
-               Xray Core: Reality + Vless
-                 :443 ingress
-                        │
-        ┌───────────────┴────────────────┐
-        │                                │
-        ▼                                ▼
-   VPN clients                fallback non-VPN traffic
-                                          │
-                                          ▼
-                                 nginx :8443
-                                          │
-        ┌───────────────┬─────────────────┼────────────────┐
-        ▼               ▼                 ▼                ▼
-   websites         monitoring        docker apps      php hosting
+```mermaid
+graph TD
+    INTERNET[Internet] -->|:443 public| XRAY(Xray VLESS + Reality)
+    
+    XRAY --> VLESS[VPN clients]
+    XRAY -->|fallback traffic| PORT[127.0.0.1:8443]
+    
+    PORT --> NGINX(nginx)
+    
+    NGINX --> MAIN[main site]
+    NGINX --> WIFE[wife site]
+    NGINX --> MON[monitoring]
+    NGINX --> DOCKER(docker apps)
+    
+    DOCKER --> GRAFANA[Grafana]
+    DOCKER --> PROM[Prometheus]
+    DOCKER --> UPTIME[Uptime Kuma]
+```
+
+
 
 ## Current Understanding
 
