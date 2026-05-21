@@ -39,12 +39,12 @@ graph LR
     classDef vpnStyle fill:#FFF3E0,stroke:#E65100,stroke-width:1.5px,rx:6px,ry:6px;
 
     %% Ingress Core Pipeline
-    Internet(["Internet"]) -- "🌐 WAN" --> Xray["Xray Core<br>vLESS + Reality<br>🔒 443"]
-    VPN["VPN Clients<br>Family Access"] -.->| "🔐 Tunnel" | Xray
-    Xray -->| "🔄 Local Fallback" | Nginx["nginx<br>Proxy Gateway<br>🔒 8443"]
+    Internet(["Internet"]) --> Xray["Xray Core<br>vLESS + Reality<br>🔒 443"]
+    VPN["VPN Clients<br>Family Access"] -.-> Xray
+    Xray --> Nginx["nginx<br>Proxy Gateway<br>🔒 8443"]
 
     %% Super Compact Subgraph Cluster for Backends
-    subgraph Hosted_Services_Stack [" 🐳 🐘 📊 🖥️ HOSTED SERVICES STACK "]
+    subgraph Hosted_Services_Stack [" HOSTED SERVICES STACK "]
         MainWeb["Websites<br>Public Domains"]
         Docker["Docker Apps<br>Containers"]
         PHP["PHP Hosting<br>PHP-FPM Apps"]
@@ -52,10 +52,10 @@ graph LR
     end
 
     %% Tight Routing Connections with Massive Icons on Lines
-    Nginx ==>| "🖥️" | MainWeb
-    Nginx ==>| "🐳" | Docker
-    Nginx ==>| "🐘" | PHP
-    Nginx ==>| "📊" | Mon
+    Nginx ==>|🌐 Websites| MainWeb
+    Nginx ==>|🐳 Docker| Docker
+    Nginx ==>|🐘 PHP| PHP
+    Nginx ==>|📊 Monitoring| Mon
 
     %% Style Injection
     class Internet internetStyle;
