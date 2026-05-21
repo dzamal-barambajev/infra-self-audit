@@ -20,12 +20,12 @@ The server was originally deployed as a private VPN gateway for family members. 
 graph LR
     classDef box fill:#fff,stroke:#777,stroke-width:1px,round;
 
-    Internet((Internet)) --> Ingress[443 public]
-    Ingress --> Xray[Xray VLESS + Reality]
+    Internet((Internet)) --> Ingress["443 public"]
+    Ingress --> Xray["Xray VLESS + Reality"]
     
     VPN[VPN Clients] -.-> Xray
 
-    Xray --> Fallback[127.0.0.1:8443]
+    Xray --> Fallback["Local 127.0.0.1 8443"]
     Fallback --> Nginx[nginx]
 
     Nginx --> Main[Main Site]
