@@ -15,6 +15,7 @@ The server was originally deployed as a private VPN gateway for family members. 
 * ✅ **Dockerized** applications and services
 * ✅ **Monitoring and observability** stack
 * ✅ **Hosting for websites** and PHP applications
+* ✅ **Security Hardening** (Zero exposed admin ports)
 
 ### Architecture Overview
 
@@ -53,6 +54,20 @@ graph LR
     class Mon monStyle;
     class VPN vpnStyle;
 ```
+
+### Edge Routing & Security Hardening
+
+To mitigate automated scanning, censorship, and active probing, the infrastructure adheres to a **single exposed port policy (TCP 443)**. All administrative panels and backend services are stripped of public ports and bound to local interfaces, heavily relying on multi-layered reverse proxying.
+
+#### Case Study: Securing the 3X-UI Admin Panel
+Previously, the VPN administration panel leaked its presence via a dedicated public port (`TCP 9999`), leaving it vulnerable to fingerprinting. The architecture was upgraded to achieve total stealth:
+
+1. **Firewall Drop**: Port `9999` was completely blocked at the external cloud firewall level (IONOS Policy).
+2. **Encrypted Fallback Loop**: Edge traffic hits `Port 443` (Xray Core Ingress). Non-VPN web traffic is routed via a fallback mechanism to local `nginx` on port `8443`.
+3. **Nginx Upstream Routing**: Nginx evaluates the inbound sub-domain (`subexample.example.com`) along with a cryptographically secure, randomized URL path.
+4. **Internal SSL Proxy**: Nginx securely proxies the request upstream over local HTTPS (`https://127.0.0.1:9999`), bypassing internal redirect loops by passing hardcoded `X-Forwarded-Proto https` headers and handling WebSocket upgrades dynamically.
+
+
 
 ### Current Understanding
 
