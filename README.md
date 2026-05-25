@@ -55,9 +55,13 @@ graph LR
     class VPN vpnStyle;
 ```
 
+
 ### Edge Routing & Security Hardening
 
-To mitigate automated scanning, censorship, and active probing, the infrastructure adheres to a **single exposed port policy (TCP 443)**. All administrative panels and backend services are stripped of public ports and bound to local interfaces, heavily relying on multi-layered reverse proxying.
+To mitigate automated scanning, censorship, and active probing, the infrastructure adheres to a **single exposed port policy (TCP 443)**. All administrative panels and backend services were stripped of public ports within the cloud firewall (IONOS Policy) and bound strictly to local interfaces. 
+
+Specifically, all external inbound rules for core infrastructure services—including **Portainer (TCP 9000)**, **Uptime Kuma (TCP 3001)**, **3X-UI (TCP 9999/2096)**, and custom backend APIs (TCP 8081/9443)—have been completely deprecated and blocked at the edge firewall level, achieving a zero-visibility network posture against public internet scanners.
+
 
 #### Case Study: Securing the 3X-UI Admin Panel
 Previously, the VPN administration panel leaked its presence via a dedicated public port (`TCP 9999`), leaving it vulnerable to fingerprinting. The architecture was upgraded to achieve total stealth:
