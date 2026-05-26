@@ -1,23 +1,23 @@
 # Infrastructure Self-Audit
 
-A self-hosted infrastructure built as a private VPN gateway and evolved into a layered stack of services, monitoring, and reverse proxy routing.
+Eine Self-Hosted-Infrastruktur, die ursprünglich als privates VPN-Gateway konzipiert wurde und sich zu einem mehrschichtigen Stack aus Diensten, Monitoring und Reverse-Proxy-Routing weiterentwickelt hat.
 
 <p align="center">
   <span style="font-size: 24px;">🌐 🔒 🐳 🚀 ⚡ 📊 🛡️</span>
 </p>
 
-### Overview
+### 📋 Übersicht
 
-The server was originally deployed as a private VPN gateway for family members. Over time, the infrastructure evolved into a layered self-hosted stack built around:
+Der Server wurde ursprünglich als privates VPN-Gateway für Familienmitglieder bereitgestellt. Im Laufe der Zeit entwickelte sich die Infrastruktur zu einem mehrschichtigen, selbst gehosteten Stack, der auf folgenden Säulen aufbaut:
 
-* ✅ **Xray Reality ingress** (vLESS over TLS)
-* ✅ **nginx** reverse proxy and backend routing
-* ✅ **Dockerized** applications and services
-* ✅ **Monitoring and observability** stack
-* ✅ **Hosting for websites** and PHP applications
-* ✅ **Security Hardening** (Zero exposed admin ports)
+* ✅ **Xray Reality Ingress** (vLESS über TLS)
+* ✅ **Nginx** als Reverse Proxy und Backend-Routing-Instanz
+* ✅ **Containerisierte** Anwendungen und Dienste (Docker)
+* ✅ **Monitoring und Observability** (Systemüberwachung)
+* ✅ **Hosting für Websites** und PHP-Anwendungen
+* ✅ **Security Hardening** (Keine offenliegenden Admin-Ports)
 
-### Architecture Overview
+### 🗺️ Architektur-Übersicht
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'Helvetica', 'primaryColor': '#ffffff', 'edgeLabelBackground':'#ffffff'}}}%%
@@ -26,7 +26,7 @@ graph LR
     classDef internetStyle fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,rx:12px,ry:12px;
     classDef xrayStyle fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,rx:12px,ry:12px;
     classDef nginxStyle fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,rx:12px,ry:12px;
-    
+
     classDef webStyle fill:#EDE7F6,stroke:#4527A0,stroke-width:2px,rx:10px,ry:10px;
     classDef dockerStyle fill:#E0F7FA,stroke:#006064,stroke-width:2px,rx:10px,ry:10px;
     classDef phpStyle fill:#E8EAF6,stroke:#1A237E,stroke-width:2px,rx:10px,ry:10px;
@@ -35,14 +35,14 @@ graph LR
 
     %% Ядро входа с тройными иконками
     Internet(["🌐 🌐 🌐<br><b>WAN Internet</b>"]) --> Xray["🔒 🔒 🔒<br><b>Xray Core Ingress</b><br>vLESS + Reality"]
-    VPN["🔑 🔑 🔑<br><b>VPN Clients</b><br>Family Access"] -.-> Xray
+    VPN["🔑 🔑 🔑<br><b>VPN-Clients</b><br>Familienzugriff"] -.-> Xray
     Xray --> Nginx["🚀 🚀 🚀<br><b>Nginx Gateway</b><br>Reverse Proxy"]
 
     %% Конечные бэкенды с тройными иконками
-    Nginx --> MainWeb["🖥️ 🖥️ 🖥️<br><b>Websites</b><br>Public Domains"]
-    Nginx --> Docker["🐳 🐳 🐳<br><b>Docker Apps</b><br>Containers"]
+    Nginx --> MainWeb["🖥️ 🖥️ 🖥️<br><b>Websites</b><br>Öffentliche Domains"]
+    Nginx --> Docker["🐳 🐳 🐳<br><b>Docker Apps</b><br>Container"]
     Nginx --> PHP["🐘 🐘 🐘<br><b>PHP Hosting</b><br>PHP-FPM Apps"]
-    Nginx --> Mon["📊 📊 📊<br><b>Monitoring</b><br>Metrics & Logs"]
+    Nginx --> Mon["📊 📊 📊<br><b>Monitoring</b><br>Metriken & Logs"]
 
     %% Применение стилей
     class Internet internetStyle;
@@ -55,25 +55,20 @@ graph LR
     class VPN vpnStyle;
 ```
 
+### 🛡️ Edge-Routing & Security Hardening
 
-### Edge Routing & Security Hardening
+Um automatisierte Scans, Zensur und aktives Probing (Active Probing) zu verhindern, folgt die Infrastruktur einer strikten **Single-Exposed-Port-Policy (nur TCP-Port 443 ist nach außen offen)**. Allen Administrations-Panels und Backend-Diensten wurden die öffentlichen Ports in der Cloud-Firewall (IONOS-Richtlinie) entzogen; sie sind ausschließlich an lokale Schnittstellen (localhost) gebunden.
 
-To mitigate automated scanning, censorship, and active probing, the infrastructure adheres to a **single exposed port policy (TCP 443)**. All administrative panels and backend services were stripped of public ports within the cloud firewall (IONOS Policy) and bound strictly to local interfaces. 
+Konkret wurden alle externen Inbound-Regeln für zentrale Infrastrukturdienste – einschließlich **Portainer (TCP 9000)**, **Uptime Kuma (TCP 3001)**, **3X-UI (TCP 9999/2096)** und benutzerdefinierten Backend-APIs (TCP 8081/9443) – vollständig entfernt und auf Ebene der Edge-Firewall blockiert. Dadurch wird eine Zero-Visibility-Netzwerkstruktur gegenüber öffentlichen Internet-Scannern erreicht.
 
-Specifically, all external inbound rules for core infrastructure services—including **Portainer (TCP 9000)**, **Uptime Kuma (TCP 3001)**, **3X-UI (TCP 9999/2096)**, and custom backend APIs (TCP 8081/9443)—have been completely deprecated and blocked at the edge firewall level, achieving a zero-visibility network posture against public internet scanners.
+#### 🔍 Fallstudie: Absicherung des 3X-UI Admin-Panels
+Zuvor war das VPN-Verwaltungspanel über einen dedizierten öffentlichen Port (`TCP 9999`) erreichbar, was es anfällig für Fingerprinting machte. Die Architektur wurde angehoben, um vollständige Tarnung (Stealth) zu erreichen:
 
+1. **Firewall Drop**: Port `9999` wurde auf Ebene der externen Cloud-Firewall (IONOS-Richtlinie) komplett gesperbt.
+2. **Encrypted Fallback Loop**: Externer Traffic trifft auf `Port 443` (Xray Core Ingress) auf. Normaler Web-Traffic (kein VPN) wird über einen Fallback-Mechanismus an den lokalen `Nginx` auf Port `8443` weitergeleitet.
+3. **Nginx Upstream Routing**: Nginx wertet die eingehende Subdomain (`subexample.example.com`) zusammen mit einem kryptografisch sicheren, zufälligen URL-Pfad aus.
+4. **Interner SSL-Proxy**: Nginx leitet die Anfrage sicher über lokales HTTPS (`https://127.0.0.1:9999`) weiter. Interne Weiterleitungsschleifen (Redirect Loops) werden vermieden, indem hartcodierte `X-Forwarded-Proto https`-Header übergeben und WebSocket-Upgrades dynamisch verarbeitet werden.
 
-#### Case Study: Securing the 3X-UI Admin Panel
-Previously, the VPN administration panel leaked its presence via a dedicated public port (`TCP 9999`), leaving it vulnerable to fingerprinting. The architecture was upgraded to achieve total stealth:
+### 📝 Aktueller Stand & Ausblick
 
-1. **Firewall Drop**: Port `9999` was completely blocked at the external cloud firewall level (IONOS Policy).
-2. **Encrypted Fallback Loop**: Edge traffic hits `Port 443` (Xray Core Ingress). Non-VPN web traffic is routed via a fallback mechanism to local `nginx` on port `8443`.
-3. **Nginx Upstream Routing**: Nginx evaluates the inbound sub-domain (`subexample.example.com`) along with a cryptographically secure, randomized URL path.
-4. **Internal SSL Proxy**: Nginx securely proxies the request upstream over local HTTPS (`https://127.0.0.1:9999`), bypassing internal redirect loops by passing hardcoded `X-Forwarded-Proto https` headers and handling WebSocket upgrades dynamically.
-
-
-
-### Current Understanding
-
-The current infrastructure grew incrementally over time and now contains multiple routing layers. 
-This repository documents its architecture, configuration, security posture, and areas for improvement.
+Die bestehende Infrastruktur ist im Laufe der Zeit organisch gewachsen und verfügt nun über mehrere Routing-Ebenen. Dieses Repository dokumentiert die Architektur, die Konfiguration, den Sicherheitsstatus sowie potenzielle Bereiche für zukünftige Optimierungen.
