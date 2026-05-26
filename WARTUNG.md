@@ -21,3 +21,15 @@ Hier werden alle technischen Wartungsarbeiten, Fehlerbehebungen und Konfiguratio
 3. **Stabilitätstest:**
    * Der Zugriff auf das **3X-UI Web-Dashboard** (über Port `8443` und den geheimen Location-Pfad) bleibt voll funktionsfähig und läuft ohne Redirect-Schleifen.
    * Die Konfiguration wurde mit `sudo systemctl reload nginx` erfolgreich live geschaltet.
+
+
+---
+
+## Behebung von SSE-Verbindungsabbrüchen in Prometheus
+
+**Datum:** 26.05.2026
+**Status:** Erfolgreich behoben (Nginx-Proxy optimiert)
+
+### 🛠 Durchgeführte Änderungen:
+* **Problem:** Die Fehlermeldung `Real-time notifications interrupted` trat im Prometheus-Webinterface auf, da Nginx die Server-Sent Events (SSE) blockierte.
+* **Lösung:** In der Datei `sites-available/monitoring` wurden die Parameter `proxy_buffering off;`, `proxy_cache off;` und ein erweitertes `proxy_read_timeout 24h;` für das Prometheus-Target hinzugefügt. Die Echtzeit-Synchronisation läuft nun stabil.
