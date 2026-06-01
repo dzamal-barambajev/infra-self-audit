@@ -1,5 +1,9 @@
 # Infrastructure Self-Audit
 
+# VPS Infrastruktur Architektur
+
+![VPS Infrastruktur Architektur](vps-infrastruktur-architektur-de.png)
+
 Eine Self-Hosted-Infrastruktur, die ursprünglich als privates VPN-Gateway konzipiert wurde und sich zu einem mehrschichtigen Stack aus Diensten, Monitoring und Reverse-Proxy-Routing weiterentwickelt hat.
 
 <p align="center">
