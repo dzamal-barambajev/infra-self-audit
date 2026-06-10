@@ -4,6 +4,14 @@
 
 ![VPS Infrastruktur Architektur](vps-infrastruktur-architektur-de.png)
 
+<p align="center">
+  <img src="docs/certifications/linux-essentials-certificate.png" width="180">
+</p>
+
+<p align="center">
+  🏆 Linux Essentials (LPI) • Certified 2026
+</p>
+
 Eine Self-Hosted-Infrastruktur, die ursprünglich als privates VPN-Gateway konzipiert wurde und sich zu einem mehrschichtigen Stack aus Diensten, Monitoring und Reverse-Proxy-Routing weiterentwickelt hat.
 
 <p align="center">
