@@ -1,0 +1,31 @@
+┌─────────────────────────────┐
+│  School Laptop (WSL)        │
+│                             │
+│  Terraform                  │
+│  kubectl                    │
+│  Git                        │
+│  GitHub Actions             │
+└──────────────┬──────────────┘
+               │
+               │ SSH Tunnel :22
+               ▼
+┌─────────────────────────────┐
+│ VPS Ubuntu 24.04            │
+│                             │
+│ Nginx                       │
+│ Xray                        │
+│ Loki                        │
+│ Promtail                    │
+│ K3s                         │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Kubernetes                  │
+│                             │
+│ terraform-lab Namespace     │
+│ terraform-demo ConfigMap    │
+│ Grafana                     │
+│ Prometheus                  │
+│ Dashboard                   │
+└─────────────────────────────┘
